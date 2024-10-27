@@ -1,0 +1,82 @@
+class ProductCatalog {
+    public boolean searchProduct(String productId) {
+        System.out.println("Searching for product: " + productId);
+        return true;
+    }
+}
+
+class PaymentProcessor {
+    public boolean processPayment(String paymentDetails, double amount) {
+        System.out.println("Processing payment of $" + amount);
+        return true;
+    }
+}
+
+class InventoryManager {
+    public boolean checkInventory(String productId) {
+        System.out.println("Checking inventory for product: " + productId);
+        return true;
+    }
+}
+
+class ShippingService {
+    public double calculateShipping(String address) {
+        System.out.println("Calculating shipping for address: " + address);
+        return 5.99;
+    }
+
+    public void shipProduct(String productId, String address) {
+        System.out.println("Shipping product " + productId + " to address: " + address);
+    }
+}
+
+class ShoppingFacade {
+    private ProductCatalog productCatalog;
+    private PaymentProcessor paymentProcessor;
+    private InventoryManager inventoryManager;
+    private ShippingService shippingService;
+
+    public ShoppingFacade() {
+        this.productCatalog = new ProductCatalog();
+        this.paymentProcessor = new PaymentProcessor();
+        this.inventoryManager = new InventoryManager();
+        this.shippingService = new ShippingService();
+    }
+
+    public void placeOrder(String productId, String paymentDetails, String address) {
+        System.out.println("Placing order for product: " + productId);
+
+        if (!productCatalog.searchProduct(productId)) {
+            System.out.println("Product not found.");
+            return;
+        }
+
+        if (!inventoryManager.checkInventory(productId)) {
+            System.out.println("Product out of stock.");
+            return;
+        }
+
+        double shippingCost = shippingService.calculateShipping(address);
+        System.out.println("Shipping cost: $" + shippingCost);
+
+        double totalAmount = 100.00 + shippingCost;
+
+        if (!paymentProcessor.processPayment(paymentDetails, totalAmount)) {
+            System.out.println("Payment failed.");
+            return;
+        }
+
+        inventoryManager.checkInventory(productId);
+        shippingService.shipProduct(productId, address);
+
+        System.out.println("Order placed successfully.");
+    }
+}
+
+public class OnlineShoppingSystem {
+    public static void main(String[] args) {
+        ShoppingFacade shoppingFacade = new ShoppingFacade();
+        shoppingFacade.placeOrder("ABC123", "CreditCardInfo", "123 Main St, Anytown, USA");
+    }
+}
+
